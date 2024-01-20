@@ -1,0 +1,48 @@
+.App {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+}
+
+.AppHeader {
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 20px 4px 12px;
+    border-bottom: 1px solid white;
+    background-color: #65A300;
+}
+
+.SideMenuAndPageContent {
+    display: flex;
+    flex: 1;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.ant-menu-item {
+    font-size: 15px;
+    font-weight: bold;
+    color: gray
+}
+
+.SideMenu {
+    height: 100%;
+    width: 230px;
+}
+
+.SideMenuVertical {
+    height: 100%;
+    padding-top: 50px;
+    width: 250px;
+}
+
+.PageContent {
+    width: 100vw;
+    padding-left: 100px;
+    padding-right: 100px;
+    padding-top: 40px
+}
