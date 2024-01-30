@@ -17,7 +17,7 @@ export default function MoneyInput({ placeholder, status, ...rest }: MoneyInputP
             decimalScale={1}
             prefix="R$ "
             customInput={Input}
-            style={{ width: 150 }}
+            style={{ width: 200 }}
             placeholder={placeholder}
             status={status}
         />

@@ -39,15 +39,14 @@ function SideMenu() {
                         icon: <ApartmentOutlined />,
                     },
                     {
+                        label: "Account and wallet",
+                        key: "/dashboard/accountWallet",
+                        icon: <WalletOutlined />
+                    },
+                    {
                         label: "Credit cards",
                         key: "/dashboard/creditcards",
                         icon: <CreditCardOutlined />,
-                        disabled: true
-                    },
-                    {
-                        label: "Wallets",
-                        key: "/dashboard/wallets",
-                        icon: <WalletOutlined />,
                         disabled: true
                     },
                     {

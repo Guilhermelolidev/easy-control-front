@@ -1,7 +1,7 @@
 import api from "./instance"
 
 export async function fetchCategories(filter?: string) {
-    const categories = await api.get(`/category?name=${filter}`)
+    const categories = await api.get(`/category?name=${filter ?? ''}`)
     return categories.data
 }
 
@@ -13,7 +13,7 @@ export async function deleteCategories(ids: number[]) {
     })
 }
 
-export async function createCategory(categories: string[]) {
+export async function createCategory(categories?: string[]) {
     await api.post(`/category`, {
         categories
     })

@@ -8,35 +8,24 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 import { Category } from "@/app/types/category";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { toast } from "react-hot-toast";
-import { deleteCategories, fetchCategories } from "@/app/api/category";
 import { useState } from "react";
+import useCategory from "@/app/hooks/useCategory";
 
 export default function Page() {
     const [filter, setFilter] = useState('')
     const [rowsToRemove, setRowsToRemove] = useState<Category[]>([])
     const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
 
-    const queryClient = useQueryClient();
+    const { queryResultWithFilter, deleteMutation } = useCategory({
+        filter,
+        queryResultWithFilterEnabled: true
+    })
+
+    const { data: categories, isLoading } = queryResultWithFilter
 
     const handleFilterChange = (event: any) => {
         setFilter(event.target.value)
     }
-
-    const { data: categories, isLoading } = useQuery(['categories', filter], () => fetchCategories(filter), {
-        refetchOnMount: true
-    });
-
-    const deleteMutation = useMutation(deleteCategories, {
-        onSuccess: () => {
-            toast.success('Category deleted successfully', { position: 'top-center' });
-            queryClient.invalidateQueries('categories');
-        },
-        onError: ({ response: { data } }: any) => {
-            toast.error(data.message, { position: 'top-center' });
-        }
-    })
 
     function handleDelete(id: number) {
         deleteMutation.mutate([id])
@@ -115,9 +104,13 @@ export default function Page() {
 
                 <Col span={24} style={{ marginTop: 20 }}>
                     <Link href="/dashboard/category/create">
-                        <Tooltip title="Create new" color="gray">
-                            <Button type="primary" shape="circle" icon={<PlusOutlined />} size="large" style={{ paddingTop: 9 }} />
-                        </Tooltip>
+                        <Button
+                            type="primary"
+                            icon={<PlusOutlined />}
+                            size='large'
+                        >
+                            Create
+                        </Button>
                     </Link>
 
                     {rowsToRemove.length > 0 && (
@@ -143,7 +136,7 @@ export default function Page() {
                     </Modal>
                 </Col>
 
-                <Col span={4}>
+                <Col span={4} style={{ marginTop: 20 }}>
                     <Input
                         type="text"
                         value={filter}

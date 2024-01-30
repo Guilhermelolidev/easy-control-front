@@ -12,6 +12,7 @@ export interface TransactionsFormData {
     value: string | number;
     categoryId: SelectCategory | null;
     type: string;
+    accountWalletId: SelectCategory | null;
 }
 
 type SelectCategory = {

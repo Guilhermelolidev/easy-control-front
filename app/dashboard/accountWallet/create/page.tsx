@@ -1,27 +1,22 @@
 "use client"
 import { Breadcrumb, Col, Row } from "antd";
+import FormAccountWallet from "../form";
 import Link from "next/link";
-import { CategoryFormData } from "@/app/types/category";
-import FormCategory from "../form";
-import useCategory from "@/app/hooks/useCategory";
-import toast from "react-hot-toast";
+import { AccountWalletFormData } from "@/app/types/accountWallet";
+import useAccountWallet from "@/app/hooks/useAccountWallet";
 
 export default function Page() {
-    const { createMutation } = useCategory({})
+    const { createMutation: { isLoading, mutate } } = useAccountWallet({})
 
-    const { mutate, isLoading } = createMutation
-
-    function onSubmit(values: CategoryFormData) {
-        toast.loading("Creating...", { id: "1" });
-        const { categories } = values
-        mutate(categories)
+    function onSubmit(values: AccountWalletFormData) {
+        mutate(values)
     }
 
     return (
         <>
             <Row gutter={[10, 15]}>
                 <Col span={24}>
-                    <h1>Category</h1>
+                    <h1>Account and wallet</h1>
                 </Col>
                 <Col span={24}>
                     <Breadcrumb
@@ -30,17 +25,17 @@ export default function Page() {
                                 title: <Link href={'/dashboard'}>Dashboard</Link>
                             },
                             {
-                                title: <Link href={'/dashboard/category'}>Category</Link>
+                                title: <Link href={'/dashboard/accountWallet'}>Account and wallet</Link>
                             },
                             {
-                                title: 'New Category'
+                                title: 'New'
                             },
                         ]}
                     />
                 </Col>
 
                 <Col span={24}>
-                    <FormCategory onSubmit={onSubmit} isLoading={isLoading} />
+                    <FormAccountWallet onSubmit={onSubmit} isLoading={isLoading} />
                 </Col>
             </Row>
         </>

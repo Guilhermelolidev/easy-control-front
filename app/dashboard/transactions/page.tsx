@@ -3,44 +3,44 @@ import { Breadcrumb, Button, Col, Input, Modal, Popconfirm, Row, Select, Space, 
 import Link from "next/link";
 import { useState } from "react";
 import { SearchOutlined, EditFilled, DeleteFilled } from '@ant-design/icons';
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { fetchCategories } from "@/app/api/category";
 import { Category } from "@/app/types/category";
 import { Transactions } from "@/app/types/transactions";
-import { deleteTransaction, fetchTransactions } from "@/app/api/transactions";
-import toast from "react-hot-toast";
 import {
     PlusOutlined
 } from "@ant-design/icons";
 import { formatMoney } from "@/app/utils/convertions";
 import { TitleFilters, TitlePage } from "@/app/ui/components/TitlePage";
+import Image from "next/image";
+import { AccountWallet } from "@/app/types/accountWallet";
+import useCategory from "@/app/hooks/useCategory";
+import useTransaction from "@/app/hooks/useTransaction";
+import useAccountWallet from "@/app/hooks/useAccountWallet";
 
 const { Text } = Typography;
 
 export default function Page() {
     const [description, setDescription] = useState<string>('')
     const [categoryId, setCategoryId] = useState<number>()
+    const [accountWalletId, setAccountWalletId] = useState<number>()
     const [rowsToRemove, setRowsToRemove] = useState<Transactions[]>([])
     const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
 
-    const queryClient = useQueryClient();
+    const { deleteMutation } = useTransaction({})
 
-    const deleteMutation = useMutation(deleteTransaction, {
-        onSuccess: () => {
-            toast.success('Transaction deleted successfully', { position: 'top-center' });
-            queryClient.invalidateQueries('transactions');
-        },
-        onError: ({ response: { data } }: any) => {
-            toast.error(data.message, { position: 'top-center' });
-        }
+    const { queryResult: { data: categories, isLoading } } = useCategory({
+        queryResultEnabled: true
     })
 
-    const { data: categories, isLoading } = useQuery('categories', () => fetchCategories(''))
+    const { queryResult: { data: accountWallets, isLoading: isLoadingAccountwallets } } = useAccountWallet({
+        queryResultEnabled: true
+    })
 
-    const { data: transactions, isLoading: isLoadingTransactions } = useQuery(['transactions', description, categoryId], () => fetchTransactions({
-        description: description,
-        categoryId: categoryId
-    }))
+    const { queryResultWithFilter: { data: transactions, isLoading: isLoadingTransactions } } = useTransaction({
+        accountWalletId,
+        categoryId,
+        description,
+        queryResultWithFilterEnabled: true
+    })
 
     function handleFilterChange(event: any) {
         setDescription(event.target.value)
@@ -93,6 +93,16 @@ export default function Page() {
             key: 'category',
         },
         {
+            title: 'Account/Wallet',
+            key: 'action',
+            render: (_, record: any) => (
+                <Space size="small" style={{ display: 'flex', alignItems: 'center' }}>
+                    <Image src={record.imageAccount} alt="" width={20} height={20} style={{ borderRadius: '50%' }} />
+                    <Text>{record.accountWallet}</Text>
+                </Space>
+            )
+        },
+        {
             title: 'Actions',
             key: 'action',
             render: (_, record: any) => (
@@ -121,7 +131,7 @@ export default function Page() {
 
     return (
         <>
-            <Row gutter={[10, 15]}>
+            <Row gutter={[10, 10]}>
                 <Col span={24}>
                     <TitlePage title="Transactions" />
                 </Col>
@@ -138,31 +148,30 @@ export default function Page() {
                         ]}
                     />
                 </Col>
+            </Row>
 
-                <Col span={24} style={{ marginTop: 20 }}>
+            <Row gutter={[10, 15]} style={{ marginTop: 25 }}>
+                <Col span={24}>
                     <Link href="/dashboard/transactions/create?type=revenue">
-                        <Tooltip title="Create new revenue" color="gray">
-                            <Button
-                                type="primary"
-                                shape="circle"
-                                icon={<PlusOutlined />}
-                                size="large"
-                                style={{ paddingTop: 9 }}
-                            />
-                        </Tooltip>
+                        <Button
+                            type="primary"
+                            icon={<PlusOutlined />}
+                            size='large'
+                            style={{ backgroundColor: 'green' }}
+                        >
+                            Revenue
+                        </Button>
                     </Link>
 
                     <Link href="/dashboard/transactions/create?type=expense" style={{ marginLeft: 10 }}>
-                        <Tooltip title="Create new expense" color="gray">
-                            <Button
-                                danger
-                                type="primary"
-                                shape="circle"
-                                icon={<PlusOutlined />}
-                                size="large"
-                                style={{ paddingTop: 9 }}
-                            />
-                        </Tooltip>
+                        <Button
+                            danger
+                            type="primary"
+                            icon={<PlusOutlined />}
+                            size='large'
+                        >
+                            Expense
+                        </Button>
                     </Link>
 
                     {rowsToRemove.length > 0 && (
@@ -187,12 +196,16 @@ export default function Page() {
                         ))}
                     </Modal>
                 </Col>
+            </Row>
 
+            <Row gutter={[10, 15]} style={{ marginTop: 25 }}>
                 <Col span={24}>
                     <TitleFilters title="Filters" />
                 </Col>
+            </Row>
 
-                <Col span={6}>
+            <Row gutter={[10, 15]} style={{ marginTop: 10 }}>
+                <Col>
                     <Input
                         type="text"
                         value={description}
@@ -202,7 +215,7 @@ export default function Page() {
                     />
                 </Col>
 
-                <Col span={12}>
+                <Col>
                     <Select
                         loading={isLoading}
                         style={{ width: 200 }}
@@ -216,12 +229,43 @@ export default function Page() {
                         allowClear
                         notFoundContent={
                             <div style={{ padding: 5 }}>
-                                <p>Sem categorias</p>
+                                <p>No category</p>
                             </div>
                         }
                     />
                 </Col>
 
+                <Col>
+                    <Select
+                        loading={isLoadingAccountwallets}
+                        style={{ width: 200 }}
+                        value={accountWalletId}
+                        onChange={(value: number) => setAccountWalletId(value)}
+                        placeholder="select an account or wallet"
+                        options={accountWallets && accountWallets.map((item: AccountWallet) => ({
+                            value: item.id,
+                            label: item.account_name,
+                            imageUrl: item.imageUrl
+                        }))}
+                        optionRender={(option: any) => {
+                            return (
+                                <Space size="small" style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Image src={option.data.imageUrl} alt="" width={20} height={20} style={{ borderRadius: '50%' }} />
+                                    <Text>{option.label}</Text>
+                                </Space>
+                            )
+                        }}
+                        allowClear
+                        notFoundContent={
+                            <div style={{ padding: 5 }}>
+                                <p>No account or wallet</p>
+                            </div>
+                        }
+                    />
+                </Col>
+            </Row>
+
+            <Row style={{ marginTop: 20 }}>
                 <Col span={24}>
                     <Table
                         rowSelection={rowSelection}
@@ -233,11 +277,11 @@ export default function Page() {
                         pagination={{
                             pageSize: 7
                         }}
-                        loading={categoryId ? false : isLoadingTransactions}
+                        loading={categoryId || accountWalletId ? false : isLoadingTransactions}
                         locale={{ emptyText: 'Nenhum registro cadastrado.' }}
                     />
                 </Col>
-            </Row >
+            </Row>
         </>
     )
 }

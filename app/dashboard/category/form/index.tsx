@@ -2,8 +2,7 @@ import { Category, CategoryFormData } from '@/app/types/category';
 import { Button, Col, Input, Row, Select, Typography } from 'antd';
 import { useFormik } from 'formik';
 import { InfoCircleOutlined } from "@ant-design/icons";
-import * as Yup from "yup";
-import { isRequired } from '@/app/utils/convertions';
+import { schemaCreate, schemaEdit } from './shemas';
 
 const { Text } = Typography
 
@@ -13,14 +12,6 @@ interface FormCreateProps {
     formData?: Category
 }
 
-const schemaCreate = Yup.object().shape({
-    categories: Yup.array().of(Yup.string().min(1, 'Category field is empty'))
-});
-
-const schemaEdit = Yup.object().shape({
-    name: Yup.string().required(isRequired('Name'))
-});
-
 export default function FormCategory({ onSubmit, isLoading, formData }: FormCreateProps) {
     const formik = useFormik({
         initialValues: {
@@ -29,6 +20,12 @@ export default function FormCategory({ onSubmit, isLoading, formData }: FormCrea
         },
         validationSchema: formData ? schemaEdit : schemaCreate,
         onSubmit: (values: CategoryFormData) => {
+            if (formData) {
+                delete values.categories
+            } else {
+                delete values.name
+            }
+
             onSubmit(values)
         },
     });

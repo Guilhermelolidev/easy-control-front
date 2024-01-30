@@ -1,30 +1,19 @@
 "use client"
 import { Breadcrumb, Col, Row, Spin } from "antd";
 import Link from "next/link";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { findCategory, udpateCategory } from "@/app/api/category";
 import { Category } from "@/app/types/category";
-import toast from "react-hot-toast";
-import { notFound, useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
 import FormCategory from "../form";
+import useCategory from "@/app/hooks/useCategory";
 
 export default function Page({ params }: { params: { id: string } }) {
-    const queryClient = useQueryClient();
-    const { push } = useRouter()
     const id = params.id;
 
-    const { data: category, isLoading, isError } = useQuery(['category', id], () => findCategory(Number(id)))
-
-    const { mutate } = useMutation(udpateCategory, {
-        onSuccess: () => {
-            toast.success('Category updated successfully!', { position: 'top-center' });
-            queryClient.invalidateQueries('category')
-            push('/dashboard/category')
-        },
-        onError: ({ response: { data } }: any) => {
-            toast.error(data.message, { position: 'top-center' });
-        }
+    const { queryResultWidthId: { data: category, isLoading, isError } } = useCategory({
+        id
     })
+
+    const { updateMutation: { mutate } } = useCategory({})
 
     function onSubmit(values: Omit<Category, 'id'>) {
         const { name } = values

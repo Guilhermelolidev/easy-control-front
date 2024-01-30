@@ -1,11 +1,12 @@
 import { TransactionsFormData } from "../types/transactions";
 import api from "./instance";
 
-export async function fetchTransactions({ description, categoryId }: {
+export async function fetchTransactions({ description, categoryId, accountWalletId }: {
     description: string,
-    categoryId?: number
+    categoryId?: number,
+    accountWalletId?: number
 }) {
-    const transactions = await api.get(`/transaction?description=${description}&categoryId=${categoryId}`)
+    const transactions = await api.get(`/transaction?description=${description}&categoryId=${categoryId}&accountWalletId=${accountWalletId}`)
     return transactions.data
 }
 

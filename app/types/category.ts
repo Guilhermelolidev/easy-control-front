@@ -4,6 +4,6 @@ export interface Category {
 }
 
 export interface CategoryFormData {
-    categories: string[]
+    categories?: string[]
     name?: string
 }

@@ -4,10 +4,13 @@ import './globals.css'
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { ConfigProvider } from 'antd';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { lighten } from 'polished';
 
 const queryClient = new QueryClient();
 
 const inter = Inter({ subsets: ['latin'] })
+
+const primary = '#142c8e'
 
 export default function RootLayout({
   children,
@@ -22,31 +25,30 @@ export default function RootLayout({
           <ConfigProvider
             theme={{
               token: {
-                colorPrimaryActive: '#65A300',
+                colorPrimaryActive: primary,
                 colorError: '#CD5C5C'
               },
               components: {
                 Input: {
-                  colorPrimary: '#65A300',
-                  colorPrimaryHover: '#65A300',
+                  colorPrimary: primary,
+                  colorPrimaryHover: primary,
                   colorPrimaryActive: 'red'
                 },
                 Button: {
-                  colorPrimary: '#65A300',
-                  colorPrimaryHover: '#659800',
-                  colorPrimaryBg: '#65A300',
+                  colorPrimary: primary,
+                  colorPrimaryHover: lighten(0.1, primary),
                 },
                 Pagination: {
-                  colorPrimary: '#65A300',
-                  colorPrimaryHover: '#65A300'
+                  colorPrimary: primary,
+                  colorPrimaryHover: primary
                 },
                 Checkbox: {
-                  colorPrimary: '#65A300',
-                  colorPrimaryHover: '#65A300'
+                  colorPrimary: primary,
+                  colorPrimaryHover: primary
                 },
                 Select: {
-                  colorPrimary: '#65A300',
-                  colorPrimaryHover: '#65A300',
+                  colorPrimary: primary,
+                  colorPrimaryHover: primary,
                   optionSelectedBg: '#D3D3D3',
                   optionSelectedColor: 'black'
                 },
@@ -56,10 +58,10 @@ export default function RootLayout({
                 Menu: {
                   itemSelectedBg: 'white',
                   itemActiveBg: 'white',
-                  itemHoverColor: '#65A300',
+                  itemHoverColor: primary,
                   itemHoverBg: 'white',
                   itemColor: 'black',
-                  itemSelectedColor: '#65A300'
+                  itemSelectedColor: primary
                 }
               }
             }

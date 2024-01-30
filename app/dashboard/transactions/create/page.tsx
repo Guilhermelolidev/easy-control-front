@@ -3,27 +3,13 @@ import { Breadcrumb, Col, Row } from "antd";
 import Link from "next/link";
 import FormTransaction from "../form";
 import { TransactionsFormData } from "@/app/types/transactions";
-import { useMutation, useQueryClient } from "react-query";
-import { createTransaction } from "@/app/api/transactions";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import useTransaction from "@/app/hooks/useTransaction";
 
 export default function Page() {
-    const queryClient = useQueryClient();
-    const { push } = useRouter()
 
-    const { mutate, isLoading } = useMutation(createTransaction, {
-        onSuccess: () => {
-            toast.success('Transaction created successfully!', { position: 'top-center' });
-            queryClient.invalidateQueries('transactions');
-            push('/dashboard/transactions')
-        },
-        onError: ({ response: { data } }: any) => {
-            toast.error(data.message, { position: 'top-center' });
-        }
-    })
+    const { createMutation: { mutate, isLoading } } = useTransaction({})
 
-    function onSubmit(values: TransactionsFormData) {
+    async function onSubmit(values: TransactionsFormData) {
         mutate(values)
     }
 

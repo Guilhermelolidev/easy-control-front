@@ -1,33 +1,20 @@
 "use client"
-import { findTransaction, updateTransaction } from "@/app/api/transactions";
 import { TransactionsFormData } from "@/app/types/transactions";
 import { Breadcrumb, Col, Row, Spin } from "antd";
 import Link from "next/link";
-import { notFound, useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { notFound } from "next/navigation";
 import FormTransaction from "../form";
+import useTransaction from "@/app/hooks/useTransaction";
 
 export default function Page({ params }: { params: { id: string } }) {
-    const queryClient = useQueryClient();
-    const { push } = useRouter()
     const id = params.id
 
-    const { data, isLoading, isError } = useQuery(['transaction', id], () => findTransaction(Number(id)))
-
-    console.log(data)
-
-    const { mutate, isLoading: isLoadingUpdating } = useMutation(updateTransaction, {
-        onSuccess: () => {
-            toast.success('Transaction updated successfully!', { position: 'top-center' });
-            queryClient.invalidateQueries('transactions')
-            queryClient.invalidateQueries('transaction')
-            push('/dashboard/transactions')
-        },
-        onError: ({ response: { data } }: any) => {
-            toast.error(data.message, { position: 'top-center' });
-        }
+    const { queryResultWithId: { data, isLoading, isError } } = useTransaction({
+        id,
+        queryResultWithIdEnabled: true
     })
+
+    const { updateMutation: { mutate, isLoading: isLoadingUpdating } } = useTransaction({})
 
     function onSubmit(values: TransactionsFormData) {
         mutate({ id: Number(id), data: values })
