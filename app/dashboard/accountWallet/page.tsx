@@ -1,53 +1,71 @@
-"use client"
-import { Breadcrumb, Button, Col, Modal, Row, Spin, Table, TableColumnsType, Typography } from "antd";
-import useAccountWallet from "@/app/hooks/useAccountWallet";
-import { AccountWallet } from "@/app/types/accountWallet";
-import { useState } from "react";
-import { Transactions } from "@/app/types/transactions";
-import useTransaction from "@/app/hooks/useTransaction";
-import { formatMoney } from "@/app/utils/convertions";
-import Link from "next/link";
+'use client';
+import {
+    Breadcrumb,
+    Button,
+    Col,
+    Modal,
+    Row,
+    Spin,
+    Table,
+    TableColumnsType,
+    Typography,
+} from 'antd';
+import useAccountWallet from '@/app/hooks/useAccountWallet';
+import { AccountWallet } from '@/app/types/accountWallet';
+import { useState } from 'react';
+import { Transactions } from '@/app/types/transactions';
+import useTransaction from '@/app/hooks/useTransaction';
+import { formatMoney } from '@/app/utils/convertions';
+import Link from 'next/link';
 import { DeleteFilled } from '@ant-design/icons';
-import AddAccountWallet from "@/app/ui/components/buttons/AddAccountWalet";
-import CardAccountWallet from "@/app/ui/components/cards/CardAccountWallet";
-import CardAccountInfo from "@/app/ui/components/cards/CardAccountInfo";
+import AddAccountWallet from '@/app/ui/components/buttons/AddAccountWalet';
+import CardAccountWallet from '@/app/ui/components/cards/CardAccountWallet';
+import CardAccountInfo from '@/app/ui/components/cards/CardAccountInfo';
 
-const { Text } = Typography
+const { Text } = Typography;
 
 export default function AccountWallet() {
-    const [idSelected, setIdSelected] = useState<number>()
-    const [openModalDelete, setOpenModalDelete] = useState(false)
+    const [idSelected, setIdSelected] = useState<number>();
+    const [openModalDelete, setOpenModalDelete] = useState(false);
 
     const {
-        queryResult: { data: accountWallets, isLoading: isLoadingAccountWallet },
+        queryResult: {
+            data: accountWallets,
+            isLoading: isLoadingAccountWallet,
+        },
         queryResultWithId: { isLoading, data: accountWallet },
-        deleteMutation
+        deleteMutation,
     } = useAccountWallet({
         queryResultEnabled: true,
         queryResultWithIdEnabled: !!idSelected,
         id: idSelected,
-        setIdSelected
-    })
+        setIdSelected,
+    });
 
-    const { queryResultWithFilter: { data: transactions, isLoading: isLoadingTransactions } } = useTransaction({
+    const {
+        queryResultWithFilter: {
+            data: transactions,
+            isLoading: isLoadingTransactions,
+        },
+    } = useTransaction({
         accountWalletId: idSelected,
-        queryResultWithFilterEnabled: true
-    })
+        queryResultWithFilterEnabled: true,
+    });
 
     if (isLoadingAccountWallet || isLoadingTransactions || isLoading) {
-        return <Spin />
+        return <Spin />;
     }
 
     const handleDeleteAccount = () => {
-        deleteMutation.mutate(accountWallet?.id)
-        setOpenModalDelete(false)
-    }
+        deleteMutation.mutate(accountWallet?.id);
+        setOpenModalDelete(false);
+    };
 
     const handleShowAccountWallet = (id?: number) => {
         if (id) {
-            setIdSelected(id)
+            setIdSelected(id);
         }
-    }
+    };
 
     const columns: TableColumnsType<Transactions> = [
         {
@@ -64,11 +82,14 @@ export default function AccountWallet() {
             title: 'Value',
             dataIndex: 'value',
             render: (_, record: Transactions) => (
-                <Text strong type={record.type === 'REVENUE' ? 'success' : 'danger'}>
+                <Text
+                    strong
+                    type={record.type === 'REVENUE' ? 'success' : 'danger'}
+                >
                     {formatMoney(Number(record.value))}
                 </Text>
-            )
-        }
+            ),
+        },
     ];
 
     return (
@@ -77,13 +98,19 @@ export default function AccountWallet() {
                 <Col span={8}>
                     <Row gutter={[10, 15]}>
                         <Col span={24}>
-                            <h1 style={{ color: '#1f2d42' }}>Account and wallet</h1>
+                            <h1 style={{ color: '#1f2d42' }}>
+                                Account and wallet
+                            </h1>
                         </Col>
                         <Col span={24}>
                             <Breadcrumb
                                 items={[
                                     {
-                                        title: <Link href={'/dashboard'}>Dashboard</Link>
+                                        title: (
+                                            <Link href={'/dashboard'}>
+                                                Dashboard
+                                            </Link>
+                                        ),
                                     },
                                     {
                                         title: 'Account and wallet',
@@ -101,21 +128,37 @@ export default function AccountWallet() {
                                 </Col>
 
                                 <Col style={{ marginLeft: 10 }}>
-                                    <AddAccountWallet text="Add wallet" isWallet href="/dashboard/accountWallet/create?type=wallet" />
+                                    <AddAccountWallet
+                                        text="Add wallet"
+                                        isWallet
+                                        href="/dashboard/accountWallet/create?type=wallet"
+                                    />
                                 </Col>
                             </Row>
 
                             <Row style={{ marginTop: 30 }}>
                                 <Col>
-                                    {accountWallets ? accountWallets.map((item: AccountWallet) => (
-                                        <CardAccountWallet
-                                            item={item}
-                                            onClick={() => handleShowAccountWallet(item.id)}
-                                            isSelected={item.id === idSelected}
-                                            key={item.id}
-                                        />
-                                    )) : (
-                                        <Typography>No account or wallet registered</Typography>
+                                    {accountWallets ? (
+                                        accountWallets.map(
+                                            (item: AccountWallet) => (
+                                                <CardAccountWallet
+                                                    item={item}
+                                                    onClick={() =>
+                                                        handleShowAccountWallet(
+                                                            item.id,
+                                                        )
+                                                    }
+                                                    isSelected={
+                                                        item.id === idSelected
+                                                    }
+                                                    key={item.id}
+                                                />
+                                            ),
+                                        )
+                                    ) : (
+                                        <Typography>
+                                            No account or wallet registered
+                                        </Typography>
                                     )}
                                 </Col>
                             </Row>
@@ -132,7 +175,9 @@ export default function AccountWallet() {
                                 ) : (
                                     <>
                                         {accountWallet && (
-                                            <CardAccountInfo accountWallet={accountWallet} />
+                                            <CardAccountInfo
+                                                accountWallet={accountWallet}
+                                            />
                                         )}
                                     </>
                                 )}
@@ -140,7 +185,7 @@ export default function AccountWallet() {
                                     danger
                                     type="primary"
                                     icon={<DeleteFilled />}
-                                    size='large'
+                                    size="large"
                                     style={{ marginLeft: 20 }}
                                     onClick={() => setOpenModalDelete(true)}
                                 >
@@ -171,5 +216,5 @@ export default function AccountWallet() {
                 </Col>
             </Row>
         </>
-    )
+    );
 }

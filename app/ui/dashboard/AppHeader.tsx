@@ -1,5 +1,5 @@
-import { BellFilled, MailOutlined } from "@ant-design/icons";
-import { Badge, Image, Space } from "antd";
+import { BellFilled, MailOutlined } from '@ant-design/icons';
+import { Badge, Image, Space } from 'antd';
 
 function AppHeader() {
     return (
@@ -13,14 +13,10 @@ function AppHeader() {
             </div>
             <Space>
                 <Badge>
-                    <MailOutlined
-                        style={{ fontSize: 24, color: 'white' }}
-                    />
+                    <MailOutlined style={{ fontSize: 24, color: 'white' }} />
                 </Badge>
                 <Badge>
-                    <BellFilled
-                        style={{ fontSize: 24 }}
-                    />
+                    <BellFilled style={{ fontSize: 24 }} />
                 </Badge>
             </Space>
         </div>

@@ -1,49 +1,64 @@
-"use client"
-import { Row, Col, Breadcrumb, Table, TableProps, Space, Tooltip, Button, Popconfirm, Spin, Alert, Input, Skeleton, Modal } from "antd";
+'use client';
+import {
+    Row,
+    Col,
+    Breadcrumb,
+    Table,
+    TableProps,
+    Space,
+    Tooltip,
+    Button,
+    Popconfirm,
+    Spin,
+    Alert,
+    Input,
+    Skeleton,
+    Modal,
+} from 'antd';
 import {
     EditFilled,
     DeleteFilled,
     PlusOutlined,
-    SearchOutlined
-} from "@ant-design/icons";
-import Link from "next/link";
-import { Category } from "@/app/types/category";
-import { useState } from "react";
-import useCategory from "@/app/hooks/useCategory";
+    SearchOutlined,
+} from '@ant-design/icons';
+import Link from 'next/link';
+import { Category } from '@/app/types/category';
+import { useState } from 'react';
+import useCategory from '@/app/hooks/useCategory';
 
 export default function Page() {
-    const [filter, setFilter] = useState('')
-    const [rowsToRemove, setRowsToRemove] = useState<Category[]>([])
+    const [filter, setFilter] = useState('');
+    const [rowsToRemove, setRowsToRemove] = useState<Category[]>([]);
     const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
 
     const { queryResultWithFilter, deleteMutation } = useCategory({
         filter,
-        queryResultWithFilterEnabled: true
-    })
+        queryResultWithFilterEnabled: true,
+    });
 
-    const { data: categories, isLoading } = queryResultWithFilter
+    const { data: categories, isLoading } = queryResultWithFilter;
 
     const handleFilterChange = (event: any) => {
-        setFilter(event.target.value)
-    }
+        setFilter(event.target.value);
+    };
 
     function handleDelete(id: number) {
-        deleteMutation.mutate([id])
+        deleteMutation.mutate([id]);
     }
 
     function handleDeleteAllRows() {
-        const ids = rowsToRemove.map(item => item.id)
+        const ids = rowsToRemove.map((item) => item.id);
 
-        deleteMutation.mutate(ids)
-        setOpenModalDelete(false)
-        setRowsToRemove([])
+        deleteMutation.mutate(ids);
+        setOpenModalDelete(false);
+        setRowsToRemove([]);
     }
 
     const rowSelection = {
         rowsToRemove,
         onChange: (_: any, selectRowsData: Category[]) => {
-            setRowsToRemove(selectRowsData)
-        }
+            setRowsToRemove(selectRowsData);
+        },
     };
 
     const columns: TableProps<Category>['columns'] = [
@@ -64,7 +79,11 @@ export default function Page() {
                 <Space size="middle">
                     <Link href={`/dashboard/category/${record.id}`}>
                         <Tooltip title="Edit" color="gray">
-                            <Button type="primary" shape="circle" icon={<EditFilled />} />
+                            <Button
+                                type="primary"
+                                shape="circle"
+                                icon={<EditFilled />}
+                            />
                         </Tooltip>
                     </Link>
                     <Popconfirm
@@ -73,7 +92,7 @@ export default function Page() {
                         okText="Yes"
                         cancelText="No"
                         onConfirm={async () => {
-                            handleDelete(record.id)
+                            handleDelete(record.id);
                         }}
                     >
                         <Button danger shape="circle" icon={<DeleteFilled />} />
@@ -93,7 +112,9 @@ export default function Page() {
                     <Breadcrumb
                         items={[
                             {
-                                title: <Link href={'/dashboard'}>Dashboard</Link>
+                                title: (
+                                    <Link href={'/dashboard'}>Dashboard</Link>
+                                ),
                             },
                             {
                                 title: 'Category',
@@ -107,7 +128,7 @@ export default function Page() {
                         <Button
                             type="primary"
                             icon={<PlusOutlined />}
-                            size='large'
+                            size="large"
                         >
                             Create
                         </Button>
@@ -116,7 +137,8 @@ export default function Page() {
                     {rowsToRemove.length > 0 && (
                         <Tooltip title="Delete all rows">
                             <Button
-                                danger icon={<DeleteFilled />}
+                                danger
+                                icon={<DeleteFilled />}
                                 shape="circle"
                                 size="large"
                                 style={{ paddingTop: 9, marginLeft: 30 }}
@@ -149,13 +171,16 @@ export default function Page() {
                 <Col span={24}>
                     <Table
                         columns={columns}
-                        dataSource={categories && categories.map((item: Category) => ({
-                            ...item,
-                            key: item.id
-                        }))}
+                        dataSource={
+                            categories &&
+                            categories.map((item: Category) => ({
+                                ...item,
+                                key: item.id,
+                            }))
+                        }
                         rowSelection={rowSelection}
                         pagination={{
-                            pageSize: 7
+                            pageSize: 7,
                         }}
                         loading={isLoading}
                         locale={{ emptyText: 'Nenhum registro cadastrado.' }}
@@ -163,5 +188,5 @@ export default function Page() {
                 </Col>
             </Row>
         </>
-    )
+    );
 }

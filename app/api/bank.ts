@@ -1,6 +1,10 @@
-import api from "./instance"
+import api from './instance';
 
 export async function fetchBank() {
-    const results = await api.get(`/bank`)
-    return results.data
+    try {
+        const results = await api.get(`/bank`);
+        return results.data;
+    } catch (error) {
+        console.log(error);
+    }
 }

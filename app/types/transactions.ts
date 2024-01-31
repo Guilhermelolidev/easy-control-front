@@ -18,4 +18,4 @@ export interface TransactionsFormData {
 type SelectCategory = {
     label: string;
     value: number;
-}
+};

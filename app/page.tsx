@@ -1,8 +1,24 @@
+'use client';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Spin } from 'antd';
 
 export default function Home() {
-  return (
-    <div style={{ marginLeft: 100, marginTop: 100 }}>
+    const router = useRouter();
 
-    </div>
-  )
+    useEffect(() => {
+        router.push('/dashboard/transactions');
+    }, []);
+
+    return (
+        <div
+            style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: 200,
+            }}
+        >
+            <Spin />
+        </div>
+    );
 }

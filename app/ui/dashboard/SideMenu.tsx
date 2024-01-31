@@ -1,17 +1,17 @@
-"use client"
+'use client';
 import {
     AppstoreOutlined,
     ApartmentOutlined,
     CreditCardOutlined,
     WalletOutlined,
-    UsergroupAddOutlined
-} from "@ant-design/icons";
-import { Menu } from "antd";
-import { useRouter } from "next/navigation";
-import { TfiMoney } from "react-icons/tfi";
+    UsergroupAddOutlined,
+} from '@ant-design/icons';
+import { Menu } from 'antd';
+import { useRouter } from 'next/navigation';
+import { TfiMoney } from 'react-icons/tfi';
 
 function SideMenu() {
-    const { push } = useRouter()
+    const { push } = useRouter();
 
     return (
         <div className="SideMenu">
@@ -24,40 +24,40 @@ function SideMenu() {
                 style={{ paddingTop: 30, paddingLeft: 10, paddingRight: 10 }}
                 items={[
                     {
-                        label: "Dashboard",
+                        label: 'Dashboard',
                         icon: <AppstoreOutlined />,
-                        key: "/dashboard"
+                        key: '/dashboard',
+                        disabled: true,
                     },
                     {
-                        label: "Transactions",
-                        key: "/dashboard/transactions",
+                        label: 'Transactions',
+                        key: '/dashboard/transactions',
                         icon: <TfiMoney />,
                     },
                     {
-                        label: "Category",
-                        key: "/dashboard/category",
+                        label: 'Category',
+                        key: '/dashboard/category',
                         icon: <ApartmentOutlined />,
                     },
                     {
-                        label: "Account and wallet",
-                        key: "/dashboard/accountWallet",
-                        icon: <WalletOutlined />
+                        label: 'Account and wallet',
+                        key: '/dashboard/accountWallet',
+                        icon: <WalletOutlined />,
                     },
                     {
-                        label: "Credit cards",
-                        key: "/dashboard/creditcards",
+                        label: 'Credit cards',
+                        key: '/dashboard/creditcards',
                         icon: <CreditCardOutlined />,
-                        disabled: true
+                        disabled: true,
                     },
                     {
-                        label: "Clients",
-                        key: "/dashboard/clients",
+                        label: 'Clients',
+                        key: '/dashboard/clients',
                         icon: <UsergroupAddOutlined />,
-                        disabled: true
+                        disabled: true,
                     },
                 ]}
-            >
-            </Menu>
+            ></Menu>
         </div>
     );
 }

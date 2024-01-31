@@ -1,15 +1,17 @@
-"use client"
-import { Breadcrumb, Col, Row } from "antd";
-import FormAccountWallet from "../form";
-import Link from "next/link";
-import { AccountWalletFormData } from "@/app/types/accountWallet";
-import useAccountWallet from "@/app/hooks/useAccountWallet";
+'use client';
+import { Breadcrumb, Col, Row } from 'antd';
+import FormAccountWallet from '../form';
+import Link from 'next/link';
+import { AccountWalletFormData } from '@/app/types/accountWallet';
+import useAccountWallet from '@/app/hooks/useAccountWallet';
 
 export default function Page() {
-    const { createMutation: { isLoading, mutate } } = useAccountWallet({})
+    const {
+        createMutation: { isLoading, mutate },
+    } = useAccountWallet({});
 
     function onSubmit(values: AccountWalletFormData) {
-        mutate(values)
+        mutate(values);
     }
 
     return (
@@ -18,26 +20,36 @@ export default function Page() {
                 <Col span={24}>
                     <h1>Account and wallet</h1>
                 </Col>
+
                 <Col span={24}>
                     <Breadcrumb
                         items={[
                             {
-                                title: <Link href={'/dashboard'}>Dashboard</Link>
+                                title: (
+                                    <Link href={'/dashboard'}>Dashboard</Link>
+                                ),
                             },
                             {
-                                title: <Link href={'/dashboard/accountWallet'}>Account and wallet</Link>
+                                title: (
+                                    <Link href={'/dashboard/accountWallet'}>
+                                        Account and wallet
+                                    </Link>
+                                ),
                             },
                             {
-                                title: 'New'
+                                title: 'New',
                             },
                         ]}
                     />
                 </Col>
 
                 <Col span={24}>
-                    <FormAccountWallet onSubmit={onSubmit} isLoading={isLoading} />
+                    <FormAccountWallet
+                        onSubmit={onSubmit}
+                        isLoading={isLoading}
+                    />
                 </Col>
             </Row>
         </>
-    )
+    );
 }
